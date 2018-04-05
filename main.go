@@ -22,9 +22,16 @@ func main() {
     //     End()
 
     _, body, _ := request.Post(poolAddr).
-        Send(`  {
-                    "command":"test",
-                }`).
+        Send(`{
+                  "id": 1,
+                  "jsonrpc": "2.0",
+                  "method": "login",
+                  "params": [
+                        "0xb85150eb365e7df0941f0cf08235f987ba91506a",//login
+                        "",//Pass
+                        "agent"//Agent
+                    ]
+            }`).
         End()
 
     fmt.Println(body)
