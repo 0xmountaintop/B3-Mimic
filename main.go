@@ -5,6 +5,8 @@ import(
     "encoding/json"
     
     "github.com/parnurzeal/gorequest"
+    "github.com/Bytom/bytom/mining"
+    "github.com/Bytom/bytom/mining"
 )
 
 var poolAddr = "stratum-btm.antpool.com:6666/"
@@ -26,17 +28,17 @@ type JobResp struct {
     Jsonrpc         string      `json:"jsonrpc, omitempty"`
     Result          [11]string  `json:"result, omitempty"`
                                     // [
-                                    //     JobId
-                                    //     Version
-                                    //     Height
-                                    //     PreviousBlockHash
-                                    //     Timestamp
-                                    //     TransactionsMerkleRoot
-                                    //     TransactionStatusHash
-                                    //     Nonce
-                                    //     Bits
-                                    //     Seed
-                                    //     Target
+                                    //     0: JobId
+                                    //     1: Version
+                                    //     2: Height
+                                    //     3: PreviousBlockHash
+                                    //     4: Timestamp
+                                    //     5: TransactionsMerkleRoot
+                                    //     6: TransactionStatusHash
+                                    //     7: Nonce
+                                    //     8: Bits
+                                    //     9: Seed
+                                    //     10: Target
                                     // ]
     Error           Err        `json:"error, omitempty"`
 }
@@ -100,4 +102,9 @@ func main() {
     json.Unmarshal([]byte(body), &jobResp)
 
     fmt.Println(jobResp.Id)
+    mine()
+}
+
+func mine() {
+
 }
