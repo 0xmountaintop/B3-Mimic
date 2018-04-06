@@ -113,17 +113,25 @@ func mine() {
 }
 
 // Version, Height, PreviousBlockId, Timestamp, TransactionsRoot, TransactionStatusHash, Bits, Nonce
-// 116 = 1+1+32+5+32+32+9+4
-func genBhByte(job [11]string) [116]byte {
-    var bhByte [116]byte
-    bhByte[0] = job[1] // Version
-    bhByte[1] = job[2] // Height
-    bhByte[2:34] = job[3] // PreviousBlockId
-    bhByte[34:39] = job[4] // Timestamp
-    bhByte[39:71] = job[5] // TransactionsRoot
-    bhByte[71:103] = job[6] // TransactionStatusHash
-    bhByte[103:112] = job[8] // Bits
-    bhByte[112:116] = job[7] // Nonce
+// 136 = 20+116 = 8+11+1 + 1+1+32+5+32+32+9+4
+func genBhByte(job [11]string) [32]byte {
+    var bhByte [32]byte
 
+    inter := [136]byte{
+                0x65, 0x6e, 0x74, 0x72, 0x79, 0x69, 0x64, 0x3a, //string "entryid:"
+                0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, //string "blockheader"
+                0x3a, //string ":"
+        }
+
+    // bhByte[20] = job[1] // Version
+    // bhByte[21] = job[2] // Height
+    // bhByte[22:54] = job[3] // PreviousBlockId
+    // bhByte[54:91] = job[4] // Timestamp
+    // bhByte[59:123] = job[5] // TransactionsRoot
+    // bhByte[91:155] = job[6] // TransactionStatusHash
+    // bhByte[123:164] = job[8] // Bits
+    // bhByte[132:136] = job[7] // Nonce
+
+    copy(bhByte[:], inter[0:32])
     return bhByte
 }
