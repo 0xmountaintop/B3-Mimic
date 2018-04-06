@@ -24,9 +24,26 @@ type AuthResp struct {
 type JobResp struct {
     Id              int64       `json:"id"`
     Jsonrpc         string      `json:"jsonrpc, omitempty"`
-    Result          []string    `json:"result, omitempty"`
+    Result          [11]string  `json:"result, omitempty"`
+                                    // [
+                                    //     JobId
+                                    //     Version
+                                    //     Height
+                                    //     PreviousBlockHash
+                                    //     Timestamp
+                                    //     TransactionsMerkleRoot
+                                    //     TransactionStatusHash
+                                    //     Nonce
+                                    //     Bits
+                                    //     Seed
+                                    //     Target
+                                    // ]
     Error           Err        `json:"error, omitempty"`
 }
+
+
+
+
 
 func main() {
     request := gorequest.New()
