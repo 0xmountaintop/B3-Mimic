@@ -5,13 +5,11 @@ import(
     "encoding/json"
     
     "github.com/parnurzeal/gorequest"
-    "github.com/Bytom/bytom/mining"
-    "github.com/Bytom/bytom/mining"
+    // "github.com/Bytom/bytom/mining"
 )
 
 var poolAddr = "stratum-btm.antpool.com:6666/"
 // var poolAddr = "221.212.212.212"
-
 
 type Err struct {
     Code            int64       `json:"code"`
@@ -102,9 +100,21 @@ func main() {
     json.Unmarshal([]byte(body), &jobResp)
 
     fmt.Println(jobResp.Id)
+
+    bhByte := genBhByte(jobResp.Result) 
+    fmt.Println(bhByte)
+
     mine()
+
 }
 
 func mine() {
 
+}
+
+// Version, Height, PreviousBlockId, Timestamp, TransactionsRoot, TransactionStatusHash, Bits, Nonce
+// 116 = 1+1+32+5+32+32+9+4
+func genBhByte([11]string) [116]byte {
+    var bhByte [116]byte
+    return bhByte
 }
