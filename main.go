@@ -126,12 +126,12 @@ func genBhByte(job [11]string) [32]byte {
     // bhByte[20] = job[1] // Version
     // bhByte[21] = job[2] // Height
     // bhByte[22:54] = job[3] // PreviousBlockId
-    // bhByte[54:91] = job[4] // Timestamp
-    // bhByte[59:123] = job[5] // TransactionsRoot
-    // bhByte[91:155] = job[6] // TransactionStatusHash
-    // bhByte[123:164] = job[8] // Bits
+    // bhByte[54:59] = job[4] // Timestamp
+    // bhByte[59:91] = job[5] // TransactionsRoot
+    // bhByte[91:123] = job[6] // TransactionStatusHash
+    // bhByte[123:132] = job[8] // Bits
     // bhByte[132:136] = job[7] // Nonce
 
-    copy(bhByte[:], inter[0:32])
+    copy(bhByte[:], inter[20:52])
     return bhByte
 }
