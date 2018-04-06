@@ -114,7 +114,16 @@ func mine() {
 
 // Version, Height, PreviousBlockId, Timestamp, TransactionsRoot, TransactionStatusHash, Bits, Nonce
 // 116 = 1+1+32+5+32+32+9+4
-func genBhByte([11]string) [116]byte {
+func genBhByte(job [11]string) [116]byte {
     var bhByte [116]byte
+    bhByte[0] = job[1] // Version
+    bhByte[1] = job[2] // Height
+    bhByte[2:34] = job[3] // PreviousBlockId
+    bhByte[34:39] = job[4] // Timestamp
+    bhByte[39:71] = job[5] // TransactionsRoot
+    bhByte[71:103] = job[6] // TransactionStatusHash
+    bhByte[103:112] = job[8] // Bits
+    bhByte[112:116] = job[7] // Nonce
+
     return bhByte
 }
