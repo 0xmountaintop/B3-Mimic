@@ -2,14 +2,16 @@ package main
 
 import(
     "fmt"
+    "strconv"
     "encoding/json"
+    "encoding/hex"
+    "encoding/binary"
     
     "github.com/parnurzeal/gorequest"
+    "github.com/bytom/protocol/bc"
     // "github.com/Bytom/bytom/mining"
+    "github.com/bytom/crypto/sha3pool"
 )
-
-var poolAddr = "stratum-btm.antpool.com:6666/"
-// var poolAddr = "221.212.212.212"
 
 type Err struct {
     Code            int64       `json:"code"`
@@ -30,22 +32,29 @@ type JobResp struct {
                                     //     1: Version
                                     //     2: Height
                                     //     3: PreviousBlockHash
-                                    //     4: Timestamp
+                                    //     4: Timestamp?
                                     //     5: TransactionsMerkleRoot
                                     //     6: TransactionStatusHash
-                                    //     7: Nonce
-                                    //     8: Bits
+                                    //     7: Nonce?
+                                    //     8: Bits?
                                     //     9: Seed
-                                    //     10: Target
+                                    //     10: Target?
                                     // ]
     Error           Err        `json:"error, omitempty"`
 }
 
+const (
+    maxNonce = ^uint64(0) // 2^64 - 1 = 18446744073709551615
+)
 
+var poolAddr = "stratum-btm.antpool.com:6666/"
+// var poolAddr = "221.212.212.212"
 
 
 
 func main() {
+    fmt.Println(maxNonce)
+
     request := gorequest.New()
 
     // resp, body, _ := request.Post(poolAddr).
@@ -63,6 +72,16 @@ func main() {
         End()
     // fmt.Println(resp)
     // fmt.Println(body)
+
+            
+    // body = `{
+    //             "id": 10, 
+    //             "result": null, 
+    //             "error": { 
+    //                 code: 0, 
+    //                 message: "Work not ready" 
+    //             }
+    //         }`
 
 
     body = `{
@@ -84,54 +103,84 @@ func main() {
             }`
 
 
-            
-    // body = `{
-    //             "id": 10, 
-    //             "result": null, 
-    //             "error": { 
-    //                 code: 0, 
-    //                 message: "Work not ready" 
-    //             }
-    //         }`
-
 
 
     var jobResp JobResp
     json.Unmarshal([]byte(body), &jobResp)
 
-    fmt.Println(jobResp.Id)
+    // fmt.Println(jobResp.Id)
 
-    bhByte := genBhByte(jobResp.Result) 
-    fmt.Println(bhByte)
-
-    mine()
-
-}
-
-func mine() {
-
+    mine(jobResp.Result)
+    // bhByte := mine(jobResp.Result)
 }
 
 // Version, Height, PreviousBlockId, Timestamp, TransactionsRoot, TransactionStatusHash, Bits, Nonce
-// 135 = 20+115 = 8+11+1 + 1+1+32+5+32+32+8+4
-func genBhByte(job [11]string) [32]byte {
-    var bhByte [32]byte
-
-    inter := [136]byte{
+// 156 = 20+136 = 8+11+1 + 8+8+32+8+32+32+8+8
+func mine(job [11]string) []byte {
+    inter := [156]byte{
                 0x65, 0x6e, 0x74, 0x72, 0x79, 0x69, 0x64, 0x3a, //string "entryid:"
                 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, //string "blockheader"
                 0x3a, //string ":"
         }
 
-    // bhByte[20] = job[1] // Version
-    // bhByte[21] = job[2] // Height
-    // bhByte[22:54] = job[3] // PreviousBlockId
-    // bhByte[54:59] = job[4] // Timestamp
-    // bhByte[59:91] = job[5] // TransactionsRoot
-    // bhByte[91:123] = job[6] // TransactionStatusHash
-    // bhByte[123:131] = job[8] // Bits
-    // bhByte[131:135] = job[7] // Nonce
+    // Version
+    copy(inter[20:28], str2bytes(job[1], 8))
+    // Height
+    copy(inter[28:36], str2bytes(job[2], 8)) 
+    // PreviousBlockId
+    copy(inter[36:68], str2bytes(job[3], 32)) 
+    // Timestamp
+    copy(inter[68:76], str2bytes(job[4], 8)) 
+    // TransactionsRoot
+    copy(inter[76:108], str2bytes(job[5], 32)) 
+    // TransactionStatusHash
+    copy(inter[108:140], str2bytes(job[6], 32)) 
+    // Bits
+    copy(inter[140:148], str2bytes(job[8], 8)) 
+    // Nonce
+    ui64Nonce, _ := strconv.ParseUint(job[7], 16, 64)
+    // fmt.Println(ui64Nonce)
+    for ; ui64Nonce <= maxNonce; ui64Nonce+=1 {
+        // copy(inter[148:156], ui64To8Bytes(4216080))
+        copy(inter[148:156], ui64To8Bytes(ui64Nonce))
+        sha3pool.Sum256(inter[20:20+32], inter[20:20+136])
+        sha3pool.Sum256(inter[20:20+32], inter[0:20+32])
+        if true {
+            break
+        }
+    }
 
-    copy(bhByte[:], inter[20:52])
-    return bhByte
+    return inter[20:20+32]
+}
+
+func str2bytes(instr string, leng uint8) []byte {
+    // fmt.Println([]byte(instr))
+    outstr := fmt.Sprintf("%064s", instr)
+    // fmt.Println(outstr)
+
+    var b [32]byte
+    hex.Decode(b[:], []byte(outstr))
+    if len(instr) < 64 {
+        b = litE2BigE(b)    
+    }
+    // fmt.Println(b)
+
+    h := bc.NewHash(b)
+    // fmt.Println(h.Bytes()[0:leng])
+    return h.Bytes()[0:leng]
+}
+
+func litE2BigE(buf [32]byte) [32]byte {
+    blen := len(buf)
+    for i := 0; i < blen/2; i++ {
+        buf[i], buf[blen-1-i] = buf[blen-1-i], buf[i]
+    }
+    return buf
+}
+
+func ui64To8Bytes(ui64 uint64) []byte {
+    bs := make([]byte, 8)
+    binary.LittleEndian.PutUint64(bs, ui64)
+    // fmt.Println(bs)
+    return bs
 }

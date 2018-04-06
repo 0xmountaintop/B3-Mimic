@@ -3,6 +3,43 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "zCPk/p/m3cr8kP4jroSzUJkUxTI=",
+			"path": "github.com/bytom/crypto/sha3pool",
+			"revision": "affb9a1272633a069109264b6e25f1cb8328fced",
+			"revisionTime": "2018-04-06T10:08:38Z"
+		},
+		{
+			"checksumSHA1": "ezJVegoWEhLw4YFnfxcoPzWPBX4=",
+			"path": "github.com/bytom/encoding/blockchain",
+			"revision": "affb9a1272633a069109264b6e25f1cb8328fced",
+			"revisionTime": "2018-04-06T10:08:38Z"
+		},
+		{
+			"checksumSHA1": "ZCB3oBCjd3PHxkVm47ivzg82VSk=",
+			"path": "github.com/bytom/encoding/bufpool",
+			"revision": "affb9a1272633a069109264b6e25f1cb8328fced",
+			"revisionTime": "2018-04-06T10:08:38Z"
+		},
+		{
+			"checksumSHA1": "X5ejq6VTqr7hazTB6RcSqE/5MJg=",
+			"path": "github.com/bytom/errors",
+			"revision": "affb9a1272633a069109264b6e25f1cb8328fced",
+			"revisionTime": "2018-04-06T10:08:38Z"
+		},
+		{
+			"checksumSHA1": "gZ36IVw1Rr5d1/WVMdvHwNp2Ygk=",
+			"path": "github.com/bytom/protocol/bc",
+			"revision": "affb9a1272633a069109264b6e25f1cb8328fced",
+			"revisionTime": "2018-04-06T10:08:38Z"
+		},
+		{
+			"checksumSHA1": "yqF125xVSkmfLpIVGrLlfE05IUk=",
+			"origin": "github.com/bytom/vendor/github.com/golang/protobuf/proto",
+			"path": "github.com/golang/protobuf/proto",
+			"revision": "affb9a1272633a069109264b6e25f1cb8328fced",
+			"revisionTime": "2018-04-06T10:08:38Z"
+		},
+		{
 			"checksumSHA1": "CxNwJP++vjUAyy3bbJnNss1Il9Q=",
 			"path": "github.com/moul/http2curl",
 			"revision": "9ac6cf4d929b2fa8fd2d2e6dec5bb0feb4f4911d",
@@ -19,6 +56,13 @@
 			"path": "github.com/pkg/errors",
 			"revision": "816c9085562cd7ee03e7f8188a1cfd942858cded",
 			"revisionTime": "2018-03-11T21:45:15Z"
+		},
+		{
+			"checksumSHA1": "DDHnuGCrmkKSXdNzc8pmn6P5O28=",
+			"origin": "github.com/bytom/vendor/golang.org/x/crypto/sha3",
+			"path": "golang.org/x/crypto/sha3",
+			"revision": "affb9a1272633a069109264b6e25f1cb8328fced",
+			"revisionTime": "2018-04-06T10:08:38Z"
 		},
 		{
 			"checksumSHA1": "ZSIQuoAzHbZEPMSJFXNyjz0YC6g=",
