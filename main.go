@@ -85,13 +85,13 @@ func main() {
 
 
             
-    // body = `{ 
+    // body = `{
     //             "id": 10, 
     //             "result": null, 
     //             "error": { 
     //                 code: 0, 
     //                 message: "Work not ready" 
-    //             } 
+    //             }
     //         }`
 
 
@@ -113,7 +113,7 @@ func mine() {
 }
 
 // Version, Height, PreviousBlockId, Timestamp, TransactionsRoot, TransactionStatusHash, Bits, Nonce
-// 136 = 20+116 = 8+11+1 + 1+1+32+5+32+32+9+4
+// 135 = 20+115 = 8+11+1 + 1+1+32+5+32+32+8+4
 func genBhByte(job [11]string) [32]byte {
     var bhByte [32]byte
 
@@ -129,8 +129,8 @@ func genBhByte(job [11]string) [32]byte {
     // bhByte[54:59] = job[4] // Timestamp
     // bhByte[59:91] = job[5] // TransactionsRoot
     // bhByte[91:123] = job[6] // TransactionStatusHash
-    // bhByte[123:132] = job[8] // Bits
-    // bhByte[132:136] = job[7] // Nonce
+    // bhByte[123:131] = job[8] // Bits
+    // bhByte[131:135] = job[7] // Nonce
 
     copy(bhByte[:], inter[20:52])
     return bhByte
