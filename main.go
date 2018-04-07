@@ -11,7 +11,6 @@ import(
     "github.com/bytom/protocol/bc"
     "github.com/bytom/crypto/sha3pool"
     "github.com/bytom/consensus/difficulty"
-    // "github.com/Bytom/bytom/mining"
 )
 
 type Err struct {
@@ -54,7 +53,7 @@ var poolAddr = "stratum-btm.antpool.com:666/"
 
 
 func main() {
-    fmt.Println(maxNonce)
+    // fmt.Println(maxNonce)
 
     request := gorequest.New()
 
@@ -101,6 +100,24 @@ func main() {
                 ]
             }`
 
+    body = `{
+                "id": 1,
+                "jsonrpc": "2.0",
+                "result": [
+                    "1",
+                    "1",
+                    "0",
+                    "0000000000000000000000000000000000000000000000000000000000000000", 
+                    "5a685ae5", 
+                    "237bf77df5c318dfa1d780043b507e00046fec7f8fdad80fc39fd8722852b27a", 
+                    "53c0ab896cb7a3778cc1d35a271264d991792b7c44f5c334116bb0786dbc5635", 
+                    "405510", 
+                    "20000000007fffff", 
+                    "e733c4b1c4ea57bc87346d9fce8c492248f1f414b9eac17faf9e9b8e0a107fa1",
+                    "bdba0400"
+                ]
+            }`
+
     var jobResp JobResp
     json.Unmarshal([]byte(body), &jobResp)
     // fmt.Println(jobResp.Id)
@@ -134,10 +151,10 @@ func mine(job [11]string) []byte {
     copy(inter[140:148], str2bytes(job[8], 8)) 
     // Nonce
     ui64Nonce, _ := strconv.ParseUint(job[7], 16, 64)
-    // fmt.Println(ui64Nonce)
+    fmt.Println("Start mining from nonce:", ui64Nonce)
     for ; ui64Nonce <= maxNonce; ui64Nonce+=1 {
+        fmt.Println("Trying nonce:", ui64Nonce)
         copy(inter[148:156], ui64To8Bytes(ui64Nonce))
-        // copy(inter[148:156], ui64To8Bytes(4216080))
         sha3pool.Sum256(inter[20:20+32], inter[20:20+136])
         sha3pool.Sum256(inter[20:20+32], inter[0:20+32])
         
@@ -148,9 +165,20 @@ func mine(job [11]string) []byte {
         copy(seed[:], str2bytes(job[9], 32))
         seedHash := bc.NewHash(seed)
         bits, _ := strconv.ParseUint(job[8], 16, 64)
-
+        
+        // fmt.Printf("header:\t")
+        // for _, h := range header {
+        //     fmt.Printf("%02x", h)
+        // }
+        // fmt.Printf("\nseed:\t")
+        // for _, s := range seed {
+        //     fmt.Printf("%02x", s)
+        // }
+        // fmt.Printf("\nbits:\t%16x\n", bits)
+        
         if difficulty.CheckProofOfWork(&headerHash, &seedHash, bits) {
-            break
+            fmt.Println("Valid nonce found:", ui64Nonce)
+            // break
         }
     }
 
