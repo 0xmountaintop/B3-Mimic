@@ -9,8 +9,9 @@ import(
     
     "github.com/parnurzeal/gorequest"
     "github.com/bytom/protocol/bc"
-    // "github.com/Bytom/bytom/mining"
     "github.com/bytom/crypto/sha3pool"
+    "github.com/bytom/consensus/difficulty"
+    // "github.com/Bytom/bytom/mining"
 )
 
 type Err struct {
@@ -47,7 +48,7 @@ const (
     maxNonce = ^uint64(0) // 2^64 - 1 = 18446744073709551615
 )
 
-var poolAddr = "stratum-btm.antpool.com:6666/"
+var poolAddr = "stratum-btm.antpool.com:666/"
 // var poolAddr = "221.212.212.212"
 
 
@@ -72,7 +73,6 @@ func main() {
         End()
     // fmt.Println(resp)
     // fmt.Println(body)
-
             
     // body = `{
     //             "id": 10, 
@@ -82,7 +82,6 @@ func main() {
     //                 message: "Work not ready" 
     //             }
     //         }`
-
 
     body = `{
                 "id": 1,
@@ -102,12 +101,8 @@ func main() {
                 ]
             }`
 
-
-
-
     var jobResp JobResp
     json.Unmarshal([]byte(body), &jobResp)
-
     // fmt.Println(jobResp.Id)
 
     mine(jobResp.Result)
@@ -141,11 +136,15 @@ func mine(job [11]string) []byte {
     ui64Nonce, _ := strconv.ParseUint(job[7], 16, 64)
     // fmt.Println(ui64Nonce)
     for ; ui64Nonce <= maxNonce; ui64Nonce+=1 {
-        // copy(inter[148:156], ui64To8Bytes(4216080))
         copy(inter[148:156], ui64To8Bytes(ui64Nonce))
+        // copy(inter[148:156], ui64To8Bytes(4216080))
         sha3pool.Sum256(inter[20:20+32], inter[20:20+136])
         sha3pool.Sum256(inter[20:20+32], inter[0:20+32])
-        if true {
+        headerHash := bc.NewHash(inter[20:20+32])
+        seed := bc.NewHash(str2bytes(job[9], 8))
+        bits := strconv.ParseUint(job[8], 16, 64)
+
+        if difficulty.CheckProofOfWork(&headerHash, &seed, bits) {
             break
         }
     }
