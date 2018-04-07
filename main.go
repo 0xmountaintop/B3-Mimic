@@ -69,33 +69,33 @@ func main() {
     log.Printf("Received: %s", buff[:n])
 
 
-    // body := `{
-    //             "id":1,
-    //             "jsonrpc":"2.0",
-    //             "result":{
-    //                 "id":"antminer_1",
-    //                 "job":{
-    //                     "version":"0100000000000000",
-    //                     "height":"2315000000000000",
-    //                     "previous_block_hash":"ecaeb84f7787aca9ed08199169fe8dc5a01f3ba50c90c6844452f916d645d911",
-    //                     "timestamp":"239dc75a00000000",
-    //                     "transactions_merkle_root":"178f3dfaf916a5f8167100602254df50f6821c243a1f6263efedde798e9271a2",
-    //                     "transaction_status_hash":"c9c377e5192668bc0a367e4a4764f11e7c725ecced1d7b6a492974fab1b6d5bc",
-    //                     "nonce":"4a06000001000000",
-    //                     "bits":"4690890000000021",
-    //                     "job_id":"16942",
-    //                     "seed":"a2a62d7715ee2234e1d73c22d26a1707fb7bc0f4ee0c01d43a4c97b0328379c5",
-    //                     "target":"c5a70000"
-    //                 },
-    //                 "status":"OK"
-    //             },
-    //             "error":null
-    //         }`
+    body := `{
+                "id":1,
+                "jsonrpc":"2.0",
+                "result":{
+                    "id":"antminer_1",
+                    "job":{
+                        "version":"0100000000000000",
+                        "height":"0000000000000000",
+                        "previous_block_hash":"0000000000000000000000000000000000000000000000000000000000000000",
+                        "timestamp":"e55a685a00000000",
+                        "transactions_merkle_root":"237bf77df5c318dfa1d780043b507e00046fec7f8fdad80fc39fd8722852b27a",
+                        "transaction_status_hash":"53c0ab896cb7a3778cc1d35a271264d991792b7c44f5c334116bb0786dbc5635",
+                        "nonce":"1055400000000000",
+                        "bits":"ffff7f0000000020",
+                        "job_id":"16942",
+                        "seed":"a2a62d7715ee2234e1d73c22d26a1707fb7bc0f4ee0c01d43a4c97b0328379c5",
+                        "target":"c5a70000"
+                    },
+                    "status":"OK"
+                },
+                "error":null
+            }`
 
 
     var resp t_resp
-    json.Unmarshal([]byte(buff[:n]), &resp)
-    // json.Unmarshal([]byte(body), &resp)
+    // json.Unmarshal([]byte(buff[:n]), &resp)
+    json.Unmarshal([]byte(body), &resp)
 
     mine(resp.Result.Job)
 }
