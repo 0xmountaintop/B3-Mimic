@@ -140,11 +140,16 @@ func mine(job [11]string) []byte {
         // copy(inter[148:156], ui64To8Bytes(4216080))
         sha3pool.Sum256(inter[20:20+32], inter[20:20+136])
         sha3pool.Sum256(inter[20:20+32], inter[0:20+32])
-        headerHash := bc.NewHash(inter[20:20+32])
-        seed := bc.NewHash(str2bytes(job[9], 8))
-        bits := strconv.ParseUint(job[8], 16, 64)
+        
+        var header [32]byte
+        copy(header[:], inter[20:20+32])
+        headerHash := bc.NewHash(header)
+        var seed [32]byte
+        copy(seed[:], str2bytes(job[9], 32))
+        seedHash := bc.NewHash(seed)
+        bits, _ := strconv.ParseUint(job[8], 16, 64)
 
-        if difficulty.CheckProofOfWork(&headerHash, &seed, bits) {
+        if difficulty.CheckProofOfWork(&headerHash, &seedHash, bits) {
             break
         }
     }
