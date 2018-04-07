@@ -161,11 +161,12 @@ func mine(job t_job) []byte {
     }
     fmt.Println()
 
-    ui64Nonce, _ := strconv.ParseUint(job.Nonce, 16, 64)
-    log.Printf("Start mining from nonce: 0x%x\n", ui64Nonce)
-    for ; ui64Nonce <= maxNonce; incr_nonce(&ui64Nonce) { //???
-        log.Printf("Trying nonce: 0x%x\n", ui64Nonce)
-        copy(inter[148:156], ui64To8Bytes(ui64Nonce))
+    ui64NonceLi, _ := strconv.ParseUint(job.Nonce, 16, 64)
+    log.Printf("Start mining from nonce: 0x%016x\n", ui64NonceLi)
+    for ; isValidNonceLi(ui64NonceLi); incr_nonceLi(&ui64NonceLi) {
+        log.Printf("Trying nonce: 0x%x\n", ui64NonceLi)
+        copy(inter[148:156], ui64LiTo8Bytes(ui64NonceLi))
+
         sha3pool.Sum256(inter[20:20+32], inter[20:20+136])
         sha3pool.Sum256(inter[20:20+32], inter[0:20+32])
         
@@ -176,7 +177,6 @@ func mine(job t_job) []byte {
         copy(seed[:], str2bytes(job.Seed, 32))
         seedHash := bc.NewHash(seed)
         bits, _ := strconv.ParseUint(job.Bits, 16, 64)
-        
 
         log.Println("checking Pow with:")
         fmt.Printf("\theader:\t0x")
@@ -190,7 +190,7 @@ func mine(job t_job) []byte {
         fmt.Printf("\n\tbits:\t0x%16x\n", bits)
         
         if difficulty.CheckProofOfWork(&headerHash, &seedHash, bits) {
-            log.Printf("Valid nonce found: 0x%x\n", ui64Nonce)
+            log.Printf("Valid nonce found: 0x%x\n", ui64NonceLi)
             break
         }
     }
@@ -198,8 +198,32 @@ func mine(job t_job) []byte {
     return inter[20:20+32]
 }
 
-func incr_nonce(ui64Nonce *uint64) {
-    (*ui64Nonce) += 1    
+func isValidNonceLi(nonceLi uint64) bool {
+    bnBg := make([]byte, 8)
+    binary.LittleEndian.PutUint64(bnBg, nonceLi)
+    // fmt.Println("bnBg", bnBg)
+    nonceBg := binary.BigEndian.Uint64(bnBg)
+    // fmt.Println("nonceBg", nonceBg)
+
+    return nonceBg <= maxNonce   
+}
+
+func incr_nonceLi(ui64NonceLi *uint64) {
+    bnBg := make([]byte, 8)
+    binary.LittleEndian.PutUint64(bnBg, *ui64NonceLi)
+    // fmt.Println("bnBg", bnBg)
+    ui64nonceBg := binary.BigEndian.Uint64(bnBg)
+    // fmt.Println("ui64nonceBg", ui64nonceBg)
+    ui64nonceBg += 1
+    // fmt.Println("increased ui64nonceBg", ui64nonceBg)
+    // binary.BigEndian.PutUint64(bnBg, ui64nonceBg)
+    // fmt.Println("increased bnBg", bnBg)
+
+    bnLi := make([]byte, 8)
+    binary.LittleEndian.PutUint64(bnLi, ui64nonceBg)
+    // fmt.Println("increase bnLi", bnLi)
+    (*ui64NonceLi) = binary.BigEndian.Uint64(bnLi)
+    // fmt.Println("increased ui64NonceLi", *ui64NonceLi)
 }
 
 func str2bytes(instr string, leng uint8) []byte {
@@ -216,13 +240,13 @@ func str2bytes(instr string, leng uint8) []byte {
 //     return buf
 // }
 
-func ui64To8Bytes(ui64 uint64) []byte {
+func ui64LiTo8Bytes(ui64li uint64) []byte {
     bs := make([]byte, 8)
-    binary.LittleEndian.PutUint64(bs, ui64)
-    fmt.Printf("\t\t\t\tbs:\t0x")
-    for _, b := range bs {
-        fmt.Printf("%02x", b)
-    }
-    fmt.Println()
+    binary.BigEndian.PutUint64(bs, ui64li)
+    // fmt.Printf("\t\t\t\tbs:\t0x")
+    // for _, b := range bs {
+    //     fmt.Printf("%02x", b)
+    // }
+    // fmt.Println()
     return bs
 }
