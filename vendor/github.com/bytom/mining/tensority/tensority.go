@@ -1,13 +1,26 @@
 package tensority
 
-import "github.com/bytom/protocol/bc"
+// #cgo CFLAGS: -I.
+// #cgo LDFLAGS: -L./lib/ -l:cSimdTs.o -lstdc++ -lgomp
+// #include "./lib/cSimdTs.h"
+import "C"
 
-// Leave here for implement cache
-type AIHash struct{}
+import(
+    "unsafe"
 
-func Hash(hash, seed *bc.Hash) *bc.Hash {
-	cache := calcSeedCache(seed.Bytes())
-	data := mulMatrix(hash.Bytes(), cache)
+    "github.com/bytom/protocol/bc"
+)
 
-	return hashMatrix(data)
+func Hash(blockHeader, seed *bc.Hash) *bc.Hash {
+    bhBytes := blockHeader.Bytes()
+    sdBytes := seed.Bytes()
+
+    // Get thearray pointer from the corresponding slice
+    bhPtr := (*C.uchar)(unsafe.Pointer(&bhBytes[0]))
+    seedPtr := (*C.uchar)(unsafe.Pointer(&sdBytes[0]))
+
+    resPtr := C.SimdTs(bhPtr, seedPtr)
+    
+    res := bc.NewHash(*(*[32]byte)(unsafe.Pointer(resPtr)))
+    return &res
 }
