@@ -3,15 +3,15 @@ package main
 import(
     "net"
     "log"
-    "fmt"
-    "strconv"
+    // "fmt"
+    // "strconv"
     "encoding/json"
     "encoding/hex"
     "encoding/binary"
     
-    "github.com/bytom/protocol/bc"
-    "github.com/bytom/crypto/sha3pool"
-    "github.com/bytom/consensus/difficulty"
+    // "github.com/bytom/protocol/bc"
+    // "github.com/bytom/crypto/sha3pool"
+    // "github.com/bytom/consensus/difficulty"
 )
 
 type t_err struct {
@@ -102,7 +102,12 @@ func main() {
 
 // Version, Height, PreviousBlockId, Timestamp, TransactionsRoot, TransactionStatusHash, Bits, Nonce
 // 156 = 20+136 = 8+11+1 + 8+8+32+8+32+32+8+8
-func mine(job t_job) []byte {
+func mine(job t_job) uint64 {
+
+    return 0
+
+
+/*    
     inter := [156]byte{
                 0x65, 0x6e, 0x74, 0x72, 0x79, 0x69, 0x64, 0x3a, //string "entryid:"
                 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, //string "blockheader"
@@ -190,12 +195,13 @@ func mine(job t_job) []byte {
         fmt.Printf("\n\tbits:\t0x%016x\n", bits)
         
         if difficulty.CheckProofOfWork(&headerHash, &seedHash, bits) {
-            log.Printf("Valid nonce found: 0x%x\n", ui64NonceLi)
+            log.Printf("Valid nonce found: 0x%016x\n", ui64NonceLi)
             break
         }
     }
 
-    return inter[20:20+32]
+    return ui64NonceLi
+*/
 }
 
 func isValidNonceLi(nonceLi uint64) bool {

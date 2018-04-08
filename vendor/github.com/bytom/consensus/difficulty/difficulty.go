@@ -101,9 +101,6 @@ func CheckProofOfWork(hash, seed *bc.Hash, bits uint64) bool {
 
 	fmt.Println(HashToBig(compareHash), "vs", CompactToBig(bits))
 
-	// 73244236200006804896540967629562784336130572291957598975277747150438572030501
-	// 94847093308577653384185819518661050448069533085310344421636332765315072
-
 	return HashToBig(compareHash).Cmp(CompactToBig(bits)) <= 0
 }
 
