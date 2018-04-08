@@ -21,6 +21,12 @@
 			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
+			"checksumSHA1": "WreoRWNhPovMbjgnGuI+N3QNIVU=",
+			"path": "github.com/bytom/consensus/difficulty",
+			"revision": "665a75fe0e06d9bbafa0f2a653c008a11f7cc4eb",
+			"revisionTime": "2018-04-04T05:56:46Z"
+		},
+		{
 			"checksumSHA1": "uXHgq+aX6Ts392u/5B8JDuKjuuQ=",
 			"path": "github.com/bytom/crypto",
 			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
@@ -79,6 +85,12 @@
 			"path": "github.com/bytom/math/checked",
 			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
 			"revisionTime": "2018-04-08T08:15:38Z"
+		},
+		{
+			"checksumSHA1": "64h4AXI5IWqI4LKDXMcTR5MhPFA=",
+			"path": "github.com/bytom/mining/tensority",
+			"revision": "665a75fe0e06d9bbafa0f2a653c008a11f7cc4eb",
+			"revisionTime": "2018-04-04T05:56:46Z"
 		},
 		{
 			"checksumSHA1": "gZ36IVw1Rr5d1/WVMdvHwNp2Ygk=",

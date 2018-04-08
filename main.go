@@ -9,8 +9,9 @@ import(
     // "encoding/hex"
     // "encoding/binary"
     
-    "github.com/bytom/protocol/bc/types"
     "github.com/bytom/testutil"
+    "github.com/bytom/protocol/bc/types"
+    "github.com/bytom/consensus/difficulty"
 )
 
 type t_err struct {
@@ -93,8 +94,8 @@ func main() {
 
 
     var resp t_resp
-    json.Unmarshal([]byte(body), &resp)
     json.Unmarshal([]byte(buff[:n]), &resp)
+    json.Unmarshal([]byte(body), &resp)
 
     mine(resp.Result.Job)
 }
@@ -115,8 +116,40 @@ type BlockHeader struct {
 */
 
 func mine(job t_job) uint64 {
-/*
-    // check parsing
+    bh := &types.BlockHeader{
+                Version:            str2ui64Bg(job.Version),
+                Height:             str2ui64Bg(job.Height),
+                PreviousBlockHash:  testutil.MustDecodeHash(job.PreBlckHsh),
+                Timestamp:          str2ui64Bg(job.Timestamp),
+                Bits:               str2ui64Bg(job.Bits), //???
+                BlockCommitment:    types.BlockCommitment{
+                                        TransactionsMerkleRoot: testutil.MustDecodeHash(job.TxMkRt),
+                                        TransactionStatusHash:  testutil.MustDecodeHash(job.TxStRt),
+                                    },
+        }
+
+    // test_hash_parsing(job)
+    // fmt.Println("version", bh.Version)
+    // fmt.Println("height", bh.Height)
+    // fmt.Println("timestamp", bh.Timestamp)
+    // fmt.Println("bits", bh.Bits)
+
+    for i := str2ui64Bg(job.Nonce); i <= maxNonce; i++ {
+        log.Printf("Checking PoW with nonce: 0x%016x = %d\n", i, i)
+        bh.Nonce = i
+        headerHash := bh.Hash()
+        fmt.Println("headerHash:", headerHash.String())
+        seedHash := testutil.MustDecodeHash(job.Seed)
+        if difficulty.CheckProofOfWork(&headerHash, &seedHash, bh.Bits) {
+            log.Printf("Mining: successful-----proof hash:%v\n", headerHash.String())
+            break
+        }
+    }
+
+    return bh.Nonce
+}
+
+func test_hash_parsing(job t_job) {
     fmt.Println(job.PreBlckHsh)
     b := testutil.MustDecodeHash(job.PreBlckHsh).Bytes()
     for _,x := range b {
@@ -124,23 +157,6 @@ func mine(job t_job) uint64 {
     }
     fmt.Println()
     fmt.Println(b)
-*/
-    bh := &types.BlockHeader{
-                Version:            str2ui64Bg(job.Version),
-                Height:             str2ui64Bg(job.Height),
-                PreviousBlockHash:  testutil.MustDecodeHash(job.PreBlckHsh),
-                Timestamp:          0,//???
-                Nonce:              0,//???
-                Bits:               0,//???
-                BlockCommitment:    types.BlockCommitment{
-                                        TransactionsMerkleRoot: testutil.MustDecodeHash(job.TxMkRt),
-                                        TransactionStatusHash:  testutil.MustDecodeHash(job.TxStRt),
-                                    },
-        }
-
-    fmt.Println(bh)
-
-    return 0
 }
 
 func str2ui64Bg(str string) uint64 {
@@ -162,163 +178,3 @@ func strSwitchEndian(oldstr string) string {
     // fmt.Println("new str:", newstr)
     return newstr
 }
-
-
-
-
-/*    
-
-// Version, Height, PreviousBlockId, Timestamp, TransactionsRoot, TransactionStatusHash, Bits, Nonce
-// 156 = 20+136 = 8+11+1 + 8+8+32+8+32+32+8+8
-
-    inter := [156]byte{
-                0x65, 0x6e, 0x74, 0x72, 0x79, 0x69, 0x64, 0x3a, //string "entryid:"
-                0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, //string "blockheader"
-                0x3a, //string ":"
-        }
-
-
-    log.Println("data parsed:")
-
-    copy(inter[20:28], str2bytes(job.Version, 8))
-    fmt.Printf("\tVersion:\t0x")
-    for _, h := range inter[20:28] {
-        fmt.Printf("%02x", h)
-    }
-    fmt.Println()
-
-    copy(inter[28:36], str2bytes(job.Height, 8))
-    fmt.Printf("\tHeight:\t\t0x")
-    for _, h := range inter[28:36] {
-        fmt.Printf("%02x", h)
-    }
-    fmt.Println()
-    
-    copy(inter[36:68], str2bytes(job.PreBlckHsh, 32))
-    fmt.Printf("\tPreBlckHsh:\t0x")
-    for _, h := range inter[36:68] {
-        fmt.Printf("%02x", h)
-    }
-    fmt.Println()
-    
-    copy(inter[68:76], str2bytes(job.Timestamp, 8))
-    fmt.Printf("\tTimestamp:\t0x")
-    for _, h := range inter[68:76] {
-        fmt.Printf("%02x", h)
-    }
-    fmt.Println()
-    
-    copy(inter[76:108], str2bytes(job.TxMkRt, 32))
-    fmt.Printf("\tTxMkRt:\t\t0x")
-    for _, h := range inter[76:108] {
-        fmt.Printf("%02x", h)
-    }
-    fmt.Println()
-    
-    copy(inter[108:140], str2bytes(job.TxStRt, 32))
-    fmt.Printf("\tTxStRt:\t\t0x")
-    for _, h := range inter[108:140] {
-        fmt.Printf("%02x", h)
-    }
-    fmt.Println()
-    
-    copy(inter[140:148], str2bytes(job.Bits, 8))
-    fmt.Printf("\tBits:\t\t0x")
-    for _, h := range inter[140:148] {
-        fmt.Printf("%02x", h)
-    }
-    fmt.Println()
-
-    ui64NonceLi, _ := strconv.ParseUint(job.Nonce, 16, 64)
-    log.Printf("Start mining from nonce: 0x%016x\n", ui64NonceLi)
-    for ; isValidNonceLi(ui64NonceLi); incr_nonceLi(&ui64NonceLi) {
-        log.Printf("Trying nonce: 0x%x\n", ui64NonceLi)
-        copy(inter[148:156], ui64LiTo8Bytes(ui64NonceLi))
-
-        sha3pool.Sum256(inter[20:20+32], inter[20:20+136])
-        sha3pool.Sum256(inter[20:20+32], inter[0:20+32])
-        
-        var header [32]byte
-        copy(header[:], inter[20:20+32])
-        headerHash := bc.NewHash(header)
-        var seed [32]byte
-        copy(seed[:], str2bytes(job.Seed, 32))
-        seedHash := bc.NewHash(seed)
-        bits, _ := strconv.ParseUint(job.Bits, 16, 64)
-
-        log.Println("checking Pow with:")
-        fmt.Printf("\theader:\t0x")
-        for _, h := range header {
-            fmt.Printf("%02x", h)
-        }
-        fmt.Printf("\n\tseed:\t0x")
-        for _, s := range seed {
-            fmt.Printf("%02x", s)
-        }
-        fmt.Printf("\n\tbits:\t0x%016x\n", bits)
-        
-        if difficulty.CheckProofOfWork(&headerHash, &seedHash, bits) {
-            log.Printf("Valid nonce found: 0x%016x\n", ui64NonceLi)
-            break
-        }
-    }
-
-    return ui64NonceLi
-
-}
-
-func isValidNonceLi(nonceLi uint64) bool {
-    bnBg := make([]byte, 8)
-    binary.LittleEndian.PutUint64(bnBg, nonceLi)
-    // fmt.Println("bnBg", bnBg)
-    nonceBg := binary.BigEndian.Uint64(bnBg)
-    // fmt.Println("nonceBg", nonceBg)
-
-    return nonceBg <= maxNonce   
-}
-
-func incr_nonceLi(ui64NonceLi *uint64) {
-    bnBg := make([]byte, 8)
-    binary.LittleEndian.PutUint64(bnBg, *ui64NonceLi)
-    // fmt.Println("bnBg", bnBg)
-    ui64nonceBg := binary.BigEndian.Uint64(bnBg)
-    // fmt.Println("ui64nonceBg", ui64nonceBg)
-    ui64nonceBg += 1
-    // fmt.Println("increased ui64nonceBg", ui64nonceBg)
-    // binary.BigEndian.PutUint64(bnBg, ui64nonceBg)
-    // fmt.Println("increased bnBg", bnBg)
-
-    bnLi := make([]byte, 8)
-    binary.LittleEndian.PutUint64(bnLi, ui64nonceBg)
-    // fmt.Println("increase bnLi", bnLi)
-    (*ui64NonceLi) = binary.BigEndian.Uint64(bnLi)
-    // fmt.Println("increased ui64NonceLi", *ui64NonceLi)
-}
-
-func str2bytes(instr string, leng uint8) []byte {
-    var b [32]byte //???
-    hex.Decode(b[:], []byte(instr))
-    return b[0:leng]
-}
-
-// func litE2BigE(buf [32]byte) [32]byte {
-//     blen := len(buf)
-//     for i := 0; i < blen/2; i++ {
-//         buf[i], buf[blen-1-i] = buf[blen-1-i], buf[i]
-//     }
-//     return buf
-// }
-
-func ui64LiTo8Bytes(ui64li uint64) []byte {
-    bs := make([]byte, 8)
-    binary.BigEndian.PutUint64(bs, ui64li)
-    // fmt.Printf("\t\t\t\tbs:\t0x")
-    // for _, b := range bs {
-    //     fmt.Printf("%02x", b)
-    // }
-    // fmt.Println()
-    return bs
-}
-
-
-*/
