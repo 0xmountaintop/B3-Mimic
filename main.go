@@ -84,7 +84,7 @@ func main() {
                         "nonce":"1055400000000000",
                         "bits":"ffff7f0000000020",
                         "job_id":"16942",
-                        "seed":"a2a62d7715ee2234e1d73c22d26a1707fb7bc0f4ee0c01d43a4c97b0328379c5",
+                        "seed":"8636e94c0f1143df98f80c53afbadad4fc3946e1cc597041d7d3f96aebacda07",
                         "target":"c5a70000"
                     },
                     "status":"OK"
@@ -187,7 +187,7 @@ func mine(job t_job) []byte {
         for _, s := range seed {
             fmt.Printf("%02x", s)
         }
-        fmt.Printf("\n\tbits:\t0x%16x\n", bits)
+        fmt.Printf("\n\tbits:\t0x%016x\n", bits)
         
         if difficulty.CheckProofOfWork(&headerHash, &seedHash, bits) {
             log.Printf("Valid nonce found: 0x%x\n", ui64NonceLi)
