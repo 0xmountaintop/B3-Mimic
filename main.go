@@ -68,34 +68,34 @@ func main() {
     n, _ := conn.Read(buff)
     log.Printf("Received: %s", buff[:n])
 
-
-    body := `{
-                "id":1,
-                "jsonrpc":"2.0",
-                "result":{
-                    "id":"antminer_1",
-                    "job":{
-                        "version":"0100000000000000",
-                        "height":"0000000000000000",
-                        "previous_block_hash":"d0dad73fb2dabf3353fda15571b4e5f6ac62ff187b354fadd4840d9ff2f1afdf",
-                        "timestamp":"e55a685a00000000",
-                        "transactions_merkle_root":"237bf77df5c318dfa1d780043b507e00046fec7f8fdad80fc39fd8722852b27a",
-                        "transaction_status_hash":"53c0ab896cb7a3778cc1d35a271264d991792b7c44f5c334116bb0786dbc5635",
-                        "nonce":"1055400000000000",
-                        "bits":"ffff7f0000000020",
-                        "job_id":"16942",
-                        "seed":"8636e94c0f1143df98f80c53afbadad4fc3946e1cc597041d7d3f96aebacda07",
-                        "target":"c5a70000"
-                    },
-                    "status":"OK"
-                },
-                "error":null
-            }`
-
-
     var resp t_resp
     json.Unmarshal([]byte(buff[:n]), &resp)
-    json.Unmarshal([]byte(body), &resp)
+
+
+    // body := `{
+    //             "id":1,
+    //             "jsonrpc":"2.0",
+    //             "result":{
+    //                 "id":"antminer_1",
+    //                 "job":{
+    //                     "version":"0100000000000000",
+    //                     "height":"0000000000000000",
+    //                     "previous_block_hash":"0000000000000000000000000000000000000000000000000000000000000000",
+    //                     "timestamp":"e55a685a00000000",
+    //                     "transactions_merkle_root":"237bf77df5c318dfa1d780043b507e00046fec7f8fdad80fc39fd8722852b27a",
+    //                     "transaction_status_hash":"53c0ab896cb7a3778cc1d35a271264d991792b7c44f5c334116bb0786dbc5635",
+    //                     "nonce":"1055400000000000",
+    //                     "bits":"ffff7f0000000020",
+    //                     "job_id":"16942",
+    //                     "seed":"8636e94c0f1143df98f80c53afbadad4fc3946e1cc597041d7d3f96aebacda07",
+    //                     "target":"c5a70000"
+    //                 },
+    //                 "status":"OK"
+    //             },
+    //             "error":null
+    //         }`
+    // json.Unmarshal([]byte(body), &resp)
+
 
     mine(resp.Result.Job)
 }
@@ -121,18 +121,20 @@ func mine(job t_job) uint64 {
                 Height:             str2ui64Bg(job.Height),
                 PreviousBlockHash:  testutil.MustDecodeHash(job.PreBlckHsh),
                 Timestamp:          str2ui64Bg(job.Timestamp),
-                Bits:               str2ui64Bg(job.Bits), //???
+                Bits:               str2ui64Bg(job.Bits),
                 BlockCommitment:    types.BlockCommitment{
                                         TransactionsMerkleRoot: testutil.MustDecodeHash(job.TxMkRt),
                                         TransactionStatusHash:  testutil.MustDecodeHash(job.TxStRt),
                                     },
         }
 
-    // test_hash_parsing(job)
-    // fmt.Println("version", bh.Version)
-    // fmt.Println("height", bh.Height)
-    // fmt.Println("timestamp", bh.Timestamp)
-    // fmt.Println("bits", bh.Bits)
+    // fmt.Println("Version:", bh.Version)
+    // fmt.Println("Height:", bh.Height)
+    // fmt.Println("PreviousBlockHash:", bh.PreviousBlockHash.String())
+    // fmt.Println("Timestamp:", bh.Timestamp)
+    // fmt.Println("Bits:", bh.Bits)
+    // fmt.Println("TransactionsMerkleRoot:", bh.BlockCommitment.TransactionsMerkleRoot.String())
+    // fmt.Println("TransactionStatusHash:", bh.BlockCommitment.TransactionStatusHash.String())
 
     for i := str2ui64Bg(job.Nonce); i <= maxNonce; i++ {
         log.Printf("Checking PoW with nonce: 0x%016x = %d\n", i, i)
@@ -147,16 +149,6 @@ func mine(job t_job) uint64 {
     }
 
     return bh.Nonce
-}
-
-func test_hash_parsing(job t_job) {
-    fmt.Println(job.PreBlckHsh)
-    b := testutil.MustDecodeHash(job.PreBlckHsh).Bytes()
-    for _,x := range b {
-        fmt.Printf("%02x", x)
-    }
-    fmt.Println()
-    fmt.Println(b)
 }
 
 func str2ui64Bg(str string) uint64 {
