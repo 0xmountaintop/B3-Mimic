@@ -3,15 +3,13 @@ package main
 import(
     "net"
     "log"
-    // "fmt"
-    // "strconv"
+    "fmt"
     "encoding/json"
     "encoding/hex"
     "encoding/binary"
     
-    // "github.com/bytom/protocol/bc"
-    // "github.com/bytom/crypto/sha3pool"
-    // "github.com/bytom/consensus/difficulty"
+    "github.com/bytom/protocol/bc/types"
+    "github.com/bytom/testutil"
 )
 
 type t_err struct {
@@ -103,6 +101,33 @@ func main() {
 // Version, Height, PreviousBlockId, Timestamp, TransactionsRoot, TransactionStatusHash, Bits, Nonce
 // 156 = 20+136 = 8+11+1 + 8+8+32+8+32+32+8+8
 func mine(job t_job) uint64 {
+/*
+type BlockHeader struct {
+    Version             uint64  // The version of the block.
+    Height              uint64  // The height of the block.
+    PreviousBlockHash   bc.Hash // The hash of the previous block.
+    Timestamp           uint64  // The time of the block in seconds.
+    Nonce               uint64  // Nonce used to generate the block.
+    Bits                uint64  // Difficulty target for the block.
+    BlockCommitment     types.BlockCommitment{
+                            TransactionsMerkleRoot: node.transactionsMerkleRoot,
+                            TransactionStatusHash:  node.transactionStatusHash,
+                        },
+}
+*/
+    bh := &types.BlockHeader{
+                Version:   0,
+                Height:    0,
+                // PreviousBlockHash: bc.NewHash(0),
+                Timestamp: 0,
+                Nonce:     0,
+                Bits:      0,
+            // BlockCommitment
+        }
+
+
+
+    fmt.Println(bh)
 
     return 0
 
