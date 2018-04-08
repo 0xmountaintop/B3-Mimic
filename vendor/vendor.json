@@ -5,152 +5,152 @@
 		{
 			"checksumSHA1": "vj3qJRfZPJqJ8W9ttn5cYFSJPGs=",
 			"path": "github.com/bytom/common",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "WYGgw4QS9zvZ0U2rS2A+uxvePU0=",
 			"path": "github.com/bytom/common/bech32",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "GMcV0oQqq9tJXrllmJYjwk9abjA=",
 			"path": "github.com/bytom/consensus",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "uXHgq+aX6Ts392u/5B8JDuKjuuQ=",
 			"path": "github.com/bytom/crypto",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "dkhjo2J8kIIn90OvrOq9qB7weLc=",
 			"path": "github.com/bytom/crypto/ed25519",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "mcDFk0coCsK3VXlZ4cJ+rD99RXw=",
 			"path": "github.com/bytom/crypto/ed25519/chainkd",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "7cdYbRomaR0UuDuhtjCgeH7e8Xs=",
 			"path": "github.com/bytom/crypto/ed25519/ecmath",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "cyv6tKwPAMqbUdf9eaqgrU27BC8=",
 			"path": "github.com/bytom/crypto/ed25519/internal/edwards25519",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "zCPk/p/m3cr8kP4jroSzUJkUxTI=",
 			"path": "github.com/bytom/crypto/sha3pool",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "ezJVegoWEhLw4YFnfxcoPzWPBX4=",
 			"path": "github.com/bytom/encoding/blockchain",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "ZCB3oBCjd3PHxkVm47ivzg82VSk=",
 			"path": "github.com/bytom/encoding/bufpool",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "X5ejq6VTqr7hazTB6RcSqE/5MJg=",
 			"path": "github.com/bytom/errors",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "PJMAL30IrZcL6nK/Osy1tkO5Eng=",
 			"path": "github.com/bytom/math/checked",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "gZ36IVw1Rr5d1/WVMdvHwNp2Ygk=",
 			"path": "github.com/bytom/protocol/bc",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "pzFfBqrTN0afvw+UQOK11s92awY=",
 			"path": "github.com/bytom/protocol/bc/types",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "rvn9L3kCmCirBceUtzyxzRIYJIE=",
 			"path": "github.com/bytom/protocol/vm",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "kuJGA4pdmnCh/ImMeKTBg+Z2fN8=",
 			"path": "github.com/bytom/protocol/vm/vmutil",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "NiIDt6YsIHJ6FTg7EplTuBNKGEE=",
 			"path": "github.com/bytom/testutil",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "yqF125xVSkmfLpIVGrLlfE05IUk=",
 			"origin": "github.com/bytom/vendor/github.com/golang/protobuf/proto",
 			"path": "github.com/golang/protobuf/proto",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "BYvROBsiyAXK4sq6yhDe8RgT4LM=",
 			"origin": "github.com/bytom/vendor/github.com/sirupsen/logrus",
 			"path": "github.com/sirupsen/logrus",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "y/oIaxq2d3WPizRZfVjo8RCRYTU=",
 			"origin": "github.com/bytom/vendor/golang.org/x/crypto/ripemd160",
 			"path": "golang.org/x/crypto/ripemd160",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "DDHnuGCrmkKSXdNzc8pmn6P5O28=",
 			"origin": "github.com/bytom/vendor/golang.org/x/crypto/sha3",
 			"path": "golang.org/x/crypto/sha3",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "ZaU56svwLgiJD0y8JOB3+/mpYBA=",
 			"origin": "github.com/bytom/vendor/golang.org/x/crypto/ssh/terminal",
 			"path": "golang.org/x/crypto/ssh/terminal",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		},
 		{
 			"checksumSHA1": "Qz8Rxw0e60uPHj41Nt26UG6xphg=",
 			"origin": "github.com/bytom/vendor/golang.org/x/sys/unix",
 			"path": "golang.org/x/sys/unix",
-			"revision": "922d2a2ee6f0577503e4caf63a20e4b255f2ee89",
-			"revisionTime": "2018-04-08T07:51:06Z"
+			"revision": "1b3005c2dfe4fe7ae234c8dbb984476bc0730842",
+			"revisionTime": "2018-04-08T08:15:38Z"
 		}
 	],
 	"rootPath": "github.com/Bytom/B3-Mimic"

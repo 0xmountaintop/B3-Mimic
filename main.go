@@ -75,7 +75,7 @@ func main() {
                     "job":{
                         "version":"0100000000000000",
                         "height":"0000000000000000",
-                        "previous_block_hash":"0000000000000000000000000000000000000000000000000000000000000000",
+                        "previous_block_hash":"d0dad73fb2dabf3353fda15571b4e5f6ac62ff187b354fadd4840d9ff2f1afdf",
                         "timestamp":"e55a685a00000000",
                         "transactions_merkle_root":"237bf77df5c318dfa1d780043b507e00046fec7f8fdad80fc39fd8722852b27a",
                         "transaction_status_hash":"53c0ab896cb7a3778cc1d35a271264d991792b7c44f5c334116bb0786dbc5635",
@@ -92,7 +92,7 @@ func main() {
 
 
     var resp t_resp
-    // json.Unmarshal([]byte(buff[:n]), &resp)
+    json.Unmarshal([]byte(buff[:n]), &resp)
     json.Unmarshal([]byte(body), &resp)
 
     mine(resp.Result.Job)
@@ -115,21 +115,34 @@ type BlockHeader struct {
                         },
 }
 */
+
+/*
+    // check parsing
+    fmt.Println(job.PreBlckHsh)
+    b := testutil.MustDecodeHash(job.PreBlckHsh).Bytes()
+    for _,x := range b {
+        fmt.Printf("%02x", x)
+    }
+    fmt.Println()
+    fmt.Println(b)
+*/
     bh := &types.BlockHeader{
-                Version:   0,
-                Height:    0,
-                // PreviousBlockHash: bc.NewHash(0),
-                Timestamp: 0,
-                Nonce:     0,
-                Bits:      0,
-            // BlockCommitment
+                Version:            0,
+                Height:             0,
+                PreviousBlockHash:  testutil.MustDecodeHash(job.PreBlckHsh),
+                Timestamp:          0,//???
+                Nonce:              0,//???
+                Bits:               0,//???
+                BlockCommitment:    types.BlockCommitment{
+                                        TransactionsMerkleRoot: testutil.MustDecodeHash(job.TxMkRt),
+                                        TransactionStatusHash:  testutil.MustDecodeHash(job.TxStRt),
+                                    },
         }
 
-
-
-    fmt.Println(bh)
-
     return 0
+}
+
+
 
 
 /*    
@@ -226,7 +239,7 @@ type BlockHeader struct {
     }
 
     return ui64NonceLi
-*/
+
 }
 
 func isValidNonceLi(nonceLi uint64) bool {
