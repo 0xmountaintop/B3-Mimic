@@ -4,9 +4,10 @@ import(
     "net"
     "log"
     "fmt"
+    "strconv"
     "encoding/json"
-    "encoding/hex"
-    "encoding/binary"
+    // "encoding/hex"
+    // "encoding/binary"
     
     "github.com/bytom/protocol/bc/types"
     "github.com/bytom/testutil"
@@ -92,15 +93,12 @@ func main() {
 
 
     var resp t_resp
-    json.Unmarshal([]byte(buff[:n]), &resp)
     json.Unmarshal([]byte(body), &resp)
+    json.Unmarshal([]byte(buff[:n]), &resp)
 
     mine(resp.Result.Job)
 }
 
-// Version, Height, PreviousBlockId, Timestamp, TransactionsRoot, TransactionStatusHash, Bits, Nonce
-// 156 = 20+136 = 8+11+1 + 8+8+32+8+32+32+8+8
-func mine(job t_job) uint64 {
 /*
 type BlockHeader struct {
     Version             uint64  // The version of the block.
@@ -116,6 +114,7 @@ type BlockHeader struct {
 }
 */
 
+func mine(job t_job) uint64 {
 /*
     // check parsing
     fmt.Println(job.PreBlckHsh)
@@ -127,8 +126,8 @@ type BlockHeader struct {
     fmt.Println(b)
 */
     bh := &types.BlockHeader{
-                Version:            0,
-                Height:             0,
+                Version:            str2ui64Bg(job.Version),
+                Height:             str2ui64Bg(job.Height),
                 PreviousBlockHash:  testutil.MustDecodeHash(job.PreBlckHsh),
                 Timestamp:          0,//???
                 Nonce:              0,//???
@@ -139,13 +138,39 @@ type BlockHeader struct {
                                     },
         }
 
+    fmt.Println(bh)
+
     return 0
+}
+
+func str2ui64Bg(str string) uint64 {
+    ui64, _ := strconv.ParseUint(strSwitchEndian(str), 16, 64)
+    return ui64
+}
+
+func strSwitchEndian(oldstr string) string {
+    // fmt.Println("old str:", oldstr)
+    slen := len(oldstr)
+    if slen%2 != 0 {
+        panic("hex string format error")
+    }
+
+    newstr := ""
+    for i := 0; i < slen; i+=2 {
+        newstr += oldstr[slen-i-2:slen-i]
+    }
+    // fmt.Println("new str:", newstr)
+    return newstr
 }
 
 
 
 
 /*    
+
+// Version, Height, PreviousBlockId, Timestamp, TransactionsRoot, TransactionStatusHash, Bits, Nonce
+// 156 = 20+136 = 8+11+1 + 8+8+32+8+32+32+8+8
+
     inter := [156]byte{
                 0x65, 0x6e, 0x74, 0x72, 0x79, 0x69, 0x64, 0x3a, //string "entryid:"
                 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, //string "blockheader"
@@ -294,3 +319,6 @@ func ui64LiTo8Bytes(ui64li uint64) []byte {
     // fmt.Println()
     return bs
 }
+
+
+*/
