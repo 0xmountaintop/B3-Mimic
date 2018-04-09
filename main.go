@@ -27,7 +27,7 @@ type t_job struct {
     TxStRt          string      `json:"transaction_status_hash"`
     Nonce           string      `json:"nonce"`
     Bits            string      `json:"bits"`
-    JobId           string      `json:"job_id"` //!!!
+    JobId           string      `json:"job_id"`
     Seed            string      `json:"seed"`
     Target          string      `json:"target"`
 }
@@ -39,7 +39,7 @@ type t_result struct {
 }
 
 type t_resp struct {
-    Id              int64       `json:"id"` //!!!
+    Id              int64       `json:"id"`
     Jsonrpc         string      `json:"jsonrpc, omitempty"`
     Result          t_result    `json:"result, omitempty"`
     Error           t_err       `json:"error, omitempty"`
