@@ -13,7 +13,7 @@ import(
 )
 
 type t_err struct {
-    Code            uint64       `json:"code"`
+    Code            uint64      `json:"code"`
     Message         string      `json:"message"`
 }
 
@@ -120,9 +120,20 @@ func main() {
         mock_input(&resp)
     }
 
-    nonce := mine(resp.Result.Job)
 
-    log.Printf("sending back nonce as string: %016x", nonce)
+    nonce := mine(resp.Result.Job)
+    nonceStr := strconv.FormatUint(nonce, 16)
+    nonceStr = fmt.Sprintf("%016s", nonceStr)
+    nonceStr = strSwitchEndian(nonceStr)
+    log.Printf("sending back nonce as string: %s", nonceStr)
+
+    send_msg = `{"method": "submit", "params": {"id": "antminer_1", "job_id": "`+resp.Result.Job.JobId+`", "nonce": "`+nonceStr+`"}, "id":1}`
+    conn.Write([]byte(send_msg))
+    conn.Write([]byte(flush))
+    log.Printf("Sent: %s", send_msg)
+    buff = make([]byte, 1024)
+    n, _ = conn.Read(buff)
+    log.Printf("Received: %s", buff[:n])
 }
 
 /*
