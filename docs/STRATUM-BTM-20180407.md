@@ -43,10 +43,26 @@ RECVD:
 
 SEND: 
 ```
-{"method": "submit", "params": {"id": "antminer_1", "job_id": "4171", "nonce": "bc000d41", "result": "7f7bcc61373e63c5a97f5bfd890411ef1bd914ba586ad02acf881c771b000000"}, "id":3}                    
+{
+    "method": "submit", 
+    "params": {
+        "id": "antminer_1", 
+        "job_id": "4171", 
+        "nonce": "bc000d41", 
+        "result": "7f7bcc61373e63c5a97f5bfd890411ef1bd914ba586ad02acf881c771b000000"
+    }, 
+    "id":3
+}                    
 ```
 
 RECVD: 
 ```
-{"id":3,"jsonrpc":"2.0","result":{"status":"OK"},"error":null}
+{
+    "id":3,
+    "jsonrpc":"2.0",
+    "result":{
+        "status":"OK"
+    },
+    "error":null
+}
 ```
