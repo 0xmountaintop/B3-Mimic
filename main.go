@@ -5,6 +5,7 @@ import(
     "log"
     "fmt"
     "strconv"
+    // "math/big"
     "encoding/json"
     
     "github.com/bytom/testutil"
@@ -134,7 +135,11 @@ func mine(job t_job) uint64 {
         }
 
         seedHash := testutil.MustDecodeHash(job.Seed)
-        // if difficulty.CheckProofOfWork(&headerHash, &seedHash, bh.Bits) {
+        // if difficulty.CheckProofOfWork(&headerHash, &seedHash, difficulty.BigToCompact(big.NewInt(int64(str2ui64Bg(job.Target))))) {
+        // if difficulty.CheckProofOfWork(&headerHash, &seedHash, difficulty.BigToCompact(big.NewInt(int64(str2ui64Li(job.Target))))) {
+        // if difficulty.CheckProofOfWork(&headerHash, &seedHash, str2ui64Bg(job.Target)) {
+        // if difficulty.CheckProofOfWork(&headerHash, &seedHash, str2ui64Li(job.Target)) {
+        // fmt.Println(difficulty.CompactToBig(bh.Bits))
         if difficulty.CheckProofOfWork(&headerHash, &seedHash, bh.Bits) {
             log.Printf("Block mined! Proof hash: 0x%v\n", headerHash.String())
             break
@@ -186,6 +191,11 @@ func view_parsing(bh *types.BlockHeader, job t_job) {
 
 func str2ui64Bg(str string) uint64 {
     ui64, _ := strconv.ParseUint(strSwitchEndian(str), 16, 64)
+    return ui64
+}
+
+func str2ui64Li(str string) uint64 {
+    ui64, _ := strconv.ParseUint(str, 16, 64)
     return ui64
 }
 
