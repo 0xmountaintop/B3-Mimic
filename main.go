@@ -91,6 +91,7 @@ func main() {
     buff = make([]byte, 1024)
     n, _ = conn.Read(buff)
     log.Printf("Received: %s", buff[:n])
+    json.Unmarshal([]byte(buff[:n]), &resp)
 }
 
 /*
@@ -121,7 +122,7 @@ func mine(job t_job) uint64 {
                                     },
         }
     if DEBUG {
-        view_parsing(bh)
+        view_parsing(bh, job)
     }
 
     for i := str2ui64Bg(job.Nonce); i <= maxNonce; i++ {
@@ -133,6 +134,7 @@ func mine(job t_job) uint64 {
         }
 
         seedHash := testutil.MustDecodeHash(job.Seed)
+        // if difficulty.CheckProofOfWork(&headerHash, &seedHash, bh.Bits) {
         if difficulty.CheckProofOfWork(&headerHash, &seedHash, bh.Bits) {
             log.Printf("Block mined! Proof hash: 0x%v\n", headerHash.String())
             break
@@ -168,15 +170,18 @@ func mock_input(presp *t_resp) {
     json.Unmarshal([]byte(body), &(*presp))
 }
 
-func view_parsing(bh *types.BlockHeader) {
+func view_parsing(bh *types.BlockHeader, job t_job) {
     log.Println("Printing parsing result:")
     fmt.Println("\tVersion:", bh.Version)
     fmt.Println("\tHeight:", bh.Height)
     fmt.Println("\tPreviousBlockHash:", bh.PreviousBlockHash.String())
     fmt.Println("\tTimestamp:", bh.Timestamp)
+    fmt.Println("\tbits_str:", job.Bits)
     fmt.Println("\tBits:", bh.Bits)
     fmt.Println("\tTransactionsMerkleRoot:", bh.BlockCommitment.TransactionsMerkleRoot.String())
     fmt.Println("\tTransactionStatusHash:", bh.BlockCommitment.TransactionStatusHash.String())
+    fmt.Println("\ttarget_str:", job.Target)
+    fmt.Println("\ttarget_ui64Bg:", str2ui64Bg(job.Target))
 }
 
 func str2ui64Bg(str string) uint64 {
