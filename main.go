@@ -44,53 +44,6 @@ type t_resp struct {
     Error           t_err       `json:"error, omitempty"`
 }
 
-
-/*
-{
-    "method": "login",
-    "params": {
-        "login": "antminer_1",
-        "pass": "123",
-        "agent": "bmminer/2.0.0"
-    },
-    "id": 1
-}
-*/
-type t_login struct {
-    Id              uint64      `json:"id"` //!!!
-    Method          string      `json:"method, omitempty"`
-    Params          t_loginp    `json:"params, omitempty"`
-}
-type t_loginp struct {
-    Login           string      `json:"login, omitempty"`
-    Pass            string      `json:"pass, omitempty"`
-    Agent           string      `json:"agent, omitempty"`
-}
-
-/*
-{
-    "method": "submit", 
-    "params": {
-        "id": "antminer_1", 
-        "job_id": "4171", 
-        "nonce": "bc000d41", 
-        "result": "7f7bcc61373e63c5a97f5bfd890411ef1bd914ba586ad02acf881c771b000000"
-    }, 
-    "id":3
-}
-*/
-type t_submission struct {
-    Id              uint64      `json:"id"` //!!!
-    Method          string      `json:"method, omitempty"`
-    Params          t_subp      `json:"params, omitempty"`
-}
-type t_subp struct {
-    Id              string      `json:"method, omitempty"`
-    JobId           string      `json:"job_id, omitempty"`
-    Nonce           string      `json:"nonce, omitempty"`
-    Result          string      `json:"result, omitempty"`
-}
-
 const (
     maxNonce = ^uint64(0) // 2^64 - 1 = 18446744073709551615
     poolAddr = "stratum-btm.antpool.com:6666"
