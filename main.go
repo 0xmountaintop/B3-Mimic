@@ -120,14 +120,18 @@ func main() {
         mock_input(&resp)
     }
 
-
     nonce := mine(resp.Result.Job)
     nonceStr := strconv.FormatUint(nonce, 16)
-    nonceStr = fmt.Sprintf("%016s", nonceStr)
-    nonceStr = strSwitchEndian(nonceStr)
-    log.Printf("sending back nonce as string: %s", nonceStr)
+    nonceStr = strSwitchEndian(fmt.Sprintf("%016s", nonceStr))
+    if DEBUG {
+        log.Printf("sending back nonce as string: %s", nonceStr)
+    }
 
-    send_msg = `{"method": "submit", "params": {"id": "antminer_1", "job_id": "`+resp.Result.Job.JobId+`", "nonce": "`+nonceStr+`"}, "id":1}`
+    send_msg = `{"method": "submit", "params": {"id": "antminer_1", "job_id": "`
+    send_msg += resp.Result.Job.JobId
+    send_msg += `", "nonce": "`
+    send_msg += nonceStr
+    send_msg += `"}, "id":1}`
     conn.Write([]byte(send_msg))
     conn.Write([]byte(flush))
     log.Printf("Sent: %s", send_msg)
