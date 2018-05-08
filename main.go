@@ -5,12 +5,15 @@ import(
     "log"
     "fmt"
     "strconv"
-    // "math/big"
     "encoding/json"
+    // "time"
+    "math/big"
+    "encoding/hex"
     
     "github.com/bytom/testutil"
     "github.com/bytom/protocol/bc/types"
     "github.com/bytom/consensus/difficulty"
+    // "github.com/bytom/consensus"
 )
 
 type t_err struct {
@@ -43,56 +46,87 @@ type t_resp struct {
     Jsonrpc         string      `json:"jsonrpc, omitempty"`
     Result          t_result    `json:"result, omitempty"`
     Error           t_err       `json:"error, omitempty"`
+    // Method          string      `json:"method, omitempty"`
+    // Params          t_job       `json:"params, omitempty"`
+}
+
+type t_jobntf struct {
+    Jsonrpc         string      `json:"jsonrpc, omitempty"`
+    Method          string      `json:"method, omitempty"`
+    Params          t_job       `json:"params, omitempty"`
 }
 
 const (
     maxNonce = ^uint64(0) // 2^64 - 1 = 18446744073709551615
-    poolAddr = "stratum-btm.antpool.com:6666"
+    poolAddr = "stratum-btm.antpool.com:6666" //39.107.125.245
+    login = `poisoned.1`
+
     flush = "\r\n\r\n"
+    MOCK = false
     DEBUG = false
+    // esHR  = uint64(166) //estimated Hashrate. 1 for Go, 10 for simd, 166 for gpu, 900 for B3
+)
+
+var (
+    MsgId = uint64(0)
+    Diff1 = StringToBig("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
+    newestJob = ""
 )
 
 func main() {
+    MsgId += 1
     conn, err := net.Dial("tcp", poolAddr)
     if err != nil {
         log.Fatalln(err)
     }
     defer conn.Close()
 
-    send_msg := `{"method": "login", "params": {"login": "antminer_1", "pass": "123", "agent": "bmminer/2.0.0"}, "id": 1}`
+    send_msg := `{"method": "login", "params": {"login": " `
+    send_msg += login 
+    send_msg += `", "pass": "123", "agent": "bmminer/2.0.0"}, "id": `
+    send_msg += strconv.FormatUint(MsgId, 10) 
+    send_msg += `}`
+    MsgId += 1
     conn.Write([]byte(send_msg))
     conn.Write([]byte(flush))
     log.Printf("Sent: %s", send_msg)
-
     buff := make([]byte, 1024)
     n, _ := conn.Read(buff)
-    log.Printf("Received: %s", buff[:n])
-
+    log.Printf("----login job received----\n%s\n", buff[:n])
     var resp t_resp
     json.Unmarshal([]byte(buff[:n]), &resp)
-    if DEBUG {
+
+        
+    if DEBUG && MOCK {
         mock_input(&resp)
     }
 
-    nonce := mine(resp.Result.Job)
-    nonceStr := strconv.FormatUint(nonce, 16)
-    nonceStr = strSwitchEndian(fmt.Sprintf("%016s", nonceStr))
-    if DEBUG {
-        log.Printf("sending back nonce as string: %s", nonceStr)
-    }
+    newestJob = resp.Result.Job.JobId
+    go func(job t_job, conn net.Conn){
+        mine(job, conn)
+    }(resp.Result.Job, conn)
+    
+    for true {
+        buff = make([]byte, 1024)
+        n, _ = conn.Read(buff)
+        var jobntf t_jobntf
+        var resp t_resp
+        json.Unmarshal([]byte(buff[:n]), &jobntf)
+        
+        if jobntf.Method == "job" {
+            log.Printf("----new job received----\n%s\n", buff[:n])
+            newestJob = jobntf.Params.JobId
+            go func(job t_job, conn net.Conn){
+                mine(job, conn)
+            }(jobntf.Params, conn)
+        } else {
+            json.Unmarshal([]byte(buff[:n]), &resp)
+            if resp.Jsonrpc == "2.0" {
+               log.Printf("Received: %s\n", buff[:n])
+            }
+        }
 
-    send_msg = `{"method": "submit", "params": {"id": "antminer_1", "job_id": "`
-    send_msg += resp.Result.Job.JobId
-    send_msg += `", "nonce": "`
-    send_msg += nonceStr
-    send_msg += `"}, "id":1}`
-    conn.Write([]byte(send_msg))
-    conn.Write([]byte(flush))
-    log.Printf("Sent: %s", send_msg)
-    buff = make([]byte, 1024)
-    n, _ = conn.Read(buff)
-    log.Printf("Received: %s", buff[:n])
-    json.Unmarshal([]byte(buff[:n]), &resp)
+    }
 }
 
 /*
@@ -110,7 +144,7 @@ type BlockHeader struct {
 }
 */
 
-func mine(job t_job) uint64 {
+func mine(job t_job, conn net.Conn) bool {
     bh := &types.BlockHeader{
                 Version:            str2ui64Bg(job.Version),
                 Height:             str2ui64Bg(job.Height),
@@ -121,32 +155,67 @@ func mine(job t_job) uint64 {
                                         TransactionsMerkleRoot: testutil.MustDecodeHash(job.TxMkRt),
                                         TransactionStatusHash:  testutil.MustDecodeHash(job.TxStRt),
                                     },
-        }
+    }
     if DEBUG {
         view_parsing(bh, job)
     }
 
-    for i := str2ui64Bg(job.Nonce); i <= maxNonce; i++ {
-        log.Printf("Checking PoW with nonce: 0x%016x = %d\n", i, i)
-        bh.Nonce = i
-        headerHash := bh.Hash()
-        if DEBUG {
-            fmt.Println("headerHash:", headerHash.String())
-        }
+    log.Printf("Job %s: Mining at height: %d\n", job.JobId, bh.Height)
+    seedHash := testutil.MustDecodeHash(job.Seed)
+    padded := make([]byte, 32)
+    targetHex := job.Target
+    decoded, _ := hex.DecodeString(targetHex)
+    decoded = reverse(decoded)
+    copy(padded[:len(decoded)], decoded)
+    newDiff := new(big.Int).SetBytes(padded)
+    newDiff = new(big.Int).Div(Diff1, newDiff)
+    log.Printf("Job %s: Old target: %v\n", job.JobId, difficulty.CompactToBig(bh.Bits))
+    newDiff = new(big.Int).Mul(difficulty.CompactToBig(bh.Bits), newDiff)
+    log.Printf("Job %s: New target: %v\n", job.JobId, newDiff)
 
-        seedHash := testutil.MustDecodeHash(job.Seed)
-        // if difficulty.CheckProofOfWork(&headerHash, &seedHash, difficulty.BigToCompact(big.NewInt(int64(str2ui64Bg(job.Target))))) {
-        // if difficulty.CheckProofOfWork(&headerHash, &seedHash, difficulty.BigToCompact(big.NewInt(int64(str2ui64Li(job.Target))))) {
-        // if difficulty.CheckProofOfWork(&headerHash, &seedHash, str2ui64Bg(job.Target)) {
-        // if difficulty.CheckProofOfWork(&headerHash, &seedHash, str2ui64Li(job.Target)) {
-        // fmt.Println(difficulty.CompactToBig(bh.Bits))
-        if difficulty.CheckProofOfWork(&headerHash, &seedHash, bh.Bits) {
-            log.Printf("Block mined! Proof hash: 0x%v\n", headerHash.String())
-            break
+    nonce := str2ui64Li(job.Nonce)
+    log.Printf("Job %s: Start from nonce:\t0x%016x = %d\n", job.JobId, nonce, nonce)
+    // for i := nonce; i <= nonce+consensus.TargetSecondsPerBlock*esHR && i <= maxNonce; i++ {
+    for i := nonce; i <= maxNonce; i++ {
+        if job.JobId != newestJob {
+            log.Printf("Job %s: Expired", job.JobId)
+            return false
+        } else {
+            // log.Printf("Checking PoW with nonce: 0x%016x = %d\n", i, i)
+            bh.Nonce = i
+            headerHash := bh.Hash()
+            if DEBUG {
+                fmt.Printf("Job %s: HeaderHash: %v\n", job.JobId, headerHash.String())
+            }
+
+            // if difficulty.CheckProofOfWork(&headerHash, &seedHash, bh.Bits) {
+            if difficulty.CheckProofOfWork(&headerHash, &seedHash, difficulty.BigToCompact(newDiff)) {
+                log.Printf("Job %s: Target found! Proof hash: 0x%v\n", job.JobId, headerHash.String())
+
+                nonceStr := strconv.FormatUint(i, 16)
+                // nonceStr = strSwitchEndian(fmt.Sprintf("%016s", nonceStr))
+                nonceStr = fmt.Sprintf("%016s", nonceStr)
+                if DEBUG {
+                    log.Printf("Job %s: Sending back nonce as string: %s", job.JobId, nonceStr)
+                }
+
+                send_msg := `{"method": "submit", "params": {"id": "`+ login + `", "job_id": "`
+                send_msg += job.JobId
+                send_msg += `", "nonce": "`
+                send_msg += nonceStr
+                send_msg += `"}, "id":`
+                send_msg += strconv.FormatUint(MsgId, 10)
+                send_msg += `}`
+                MsgId += 1
+                conn.Write([]byte(send_msg))
+                conn.Write([]byte(flush))
+                log.Printf("Job %s: Sent: %s", job.JobId, send_msg)
+                // return true
+            }        
         }
     }
-
-    return bh.Nonce
+    log.Printf("Job %s: Stop at nonce:\t\t0x%016x = %d\n", job.JobId, bh.Nonce, bh.Nonce)
+    return false
 }
 
 func mock_input(presp *t_resp) {
@@ -212,4 +281,18 @@ func strSwitchEndian(oldstr string) string {
     }
     // fmt.Println("new str:", newstr)
     return newstr
+}
+
+func StringToBig(h string) *big.Int {
+    n := new(big.Int)
+    n.SetString(h, 0)
+    return n
+}
+
+func reverse(src []byte) []byte {
+    dst := make([]byte, len(src))
+    for i := len(src); i > 0; i-- {
+        dst[len(src)-i] = src[i-1]
+    }
+    return dst
 }
