@@ -57,7 +57,7 @@ type t_jobntf struct {
 const (
     maxNonce = ^uint64(0) // 2^64 - 1 = 18446744073709551615
     poolAddr = "stratum-btm.antpool.com:6666" //39.107.125.245
-    login = `haoyuyu.1`
+    login = `poisoned.1`
 
     flush = "\r\n\r\n"
     MOCK = false
