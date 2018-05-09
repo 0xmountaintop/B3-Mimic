@@ -119,7 +119,6 @@ func main() {
         } else {
             log.Printf("Received: %s\n", buff[:n])
         }
-
     }
 }
 
