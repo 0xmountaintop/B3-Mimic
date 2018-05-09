@@ -13,7 +13,7 @@ import(
     "github.com/bytom/testutil"
     "github.com/bytom/protocol/bc/types"
     "github.com/bytom/consensus/difficulty"
-    // "github.com/bytom/consensus"
+    "github.com/bytom/consensus"
 )
 
 type t_err struct {
@@ -46,8 +46,6 @@ type t_resp struct {
     Jsonrpc         string      `json:"jsonrpc, omitempty"`
     Result          t_result    `json:"result, omitempty"`
     Error           t_err       `json:"error, omitempty"`
-    // Method          string      `json:"method, omitempty"`
-    // Params          t_job       `json:"params, omitempty"`
 }
 
 type t_jobntf struct {
@@ -59,12 +57,12 @@ type t_jobntf struct {
 const (
     maxNonce = ^uint64(0) // 2^64 - 1 = 18446744073709551615
     poolAddr = "stratum-btm.antpool.com:6666" //39.107.125.245
-    login = `poisoned.1`
+    login = `haoyuyu.1`
 
     flush = "\r\n\r\n"
     MOCK = false
     DEBUG = false
-    // esHR  = uint64(166) //estimated Hashrate. 1 for Go, 10 for simd, 166 for gpu, 900 for B3
+    esHR  = uint64(166) //estimated Hashrate. 1 for Go, 10 for simd, 166 for gpu, 900 for B3
 )
 
 var (
@@ -81,7 +79,7 @@ func main() {
     }
     defer conn.Close()
 
-    send_msg := `{"method": "login", "params": {"login": " `
+    send_msg := `{"method": "login", "params": {"login": "`
     send_msg += login 
     send_msg += `", "pass": "123", "agent": "bmminer/2.0.0"}, "id": `
     send_msg += strconv.FormatUint(MsgId, 10) 
@@ -110,7 +108,6 @@ func main() {
         buff = make([]byte, 1024)
         n, _ = conn.Read(buff)
         var jobntf t_jobntf
-        var resp t_resp
         json.Unmarshal([]byte(buff[:n]), &jobntf)
         
         if jobntf.Method == "job" {
@@ -120,10 +117,7 @@ func main() {
                 mine(job, conn)
             }(jobntf.Params, conn)
         } else {
-            json.Unmarshal([]byte(buff[:n]), &resp)
-            if resp.Jsonrpc == "2.0" {
-               log.Printf("Received: %s\n", buff[:n])
-            }
+            log.Printf("Received: %s\n", buff[:n])
         }
 
     }
@@ -199,7 +193,9 @@ func mine(job t_job, conn net.Conn) bool {
                     log.Printf("Job %s: Sending back nonce as string: %s", job.JobId, nonceStr)
                 }
 
-                send_msg := `{"method": "submit", "params": {"id": "`+ login + `", "job_id": "`
+                send_msg := `{"method": "submit", "params": {"id": "`
+                send_msg += login 
+                send_msg += `", "job_id": "`
                 send_msg += job.JobId
                 send_msg += `", "nonce": "`
                 send_msg += nonceStr
