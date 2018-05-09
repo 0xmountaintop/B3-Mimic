@@ -13,7 +13,7 @@ import(
     "github.com/bytom/testutil"
     "github.com/bytom/protocol/bc/types"
     "github.com/bytom/consensus/difficulty"
-    "github.com/bytom/consensus"
+    // "github.com/bytom/consensus"
 )
 
 type t_err struct {
