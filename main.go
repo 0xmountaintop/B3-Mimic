@@ -77,6 +77,7 @@ login:
     conn, err := net.Dial("tcp", poolAddr)
     if err != nil {
         log.Println(err)
+        MsgId = uint64(0)
         goto login
     }
     defer conn.Close()
