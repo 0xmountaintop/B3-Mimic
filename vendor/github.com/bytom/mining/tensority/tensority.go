@@ -19,8 +19,8 @@ func Hash(blockHeader, seed *bc.Hash) *bc.Hash {
     bhPtr := (*C.uint8_t)(unsafe.Pointer(&bhBytes[0]))
     seedPtr := (*C.uint8_t)(unsafe.Pointer(&sdBytes[0]))
 
-    resPtr := C.SimdTs(bhPtr, seedPtr)
-    
+    resPtr := C.SimdTs((*C.uint8_t)(bhPtr), (*C.uint8_t)(seedPtr))
+
     res := bc.NewHash(*(*[32]byte)(unsafe.Pointer(resPtr)))
     return &res
 }
