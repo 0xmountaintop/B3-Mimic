@@ -182,7 +182,7 @@ func mine(job t_job, conn net.Conn) bool {
     newDiff = new(big.Int).Mul(difficulty.CompactToBig(bh.Bits), newDiff)
     log.Printf("Job %s: New target: %v\n", job.JobId, newDiff)
 
-    nonce := str2ui64Li(job.Nonce)
+    nonce := str2ui64Bg(job.Nonce)
     log.Printf("Job %s: Start from nonce:\t0x%016x = %d\n", job.JobId, nonce, nonce)
     // for i := nonce; i <= nonce+consensus.TargetSecondsPerBlock*esHR && i <= maxNonce; i++ {
     for i := nonce; i <= maxNonce; i++ {
