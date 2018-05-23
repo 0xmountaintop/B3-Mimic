@@ -156,11 +156,11 @@ func mine(job t_job, conn net.Conn) bool {
     }
 
     bh := &types.BlockHeader{
-                Version:            str2ui64Bg(job.Version),
-                Height:             str2ui64Bg(job.Height),
+                Version:            strLi2ui64(job.Version),
+                Height:             strLi2ui64(job.Height),
                 PreviousBlockHash:  PreBlckHsh,
-                Timestamp:          str2ui64Bg(job.Timestamp),
-                Bits:               str2ui64Bg(job.Bits),
+                Timestamp:          strLi2ui64(job.Timestamp),
+                Bits:               strLi2ui64(job.Bits),
                 BlockCommitment:    types.BlockCommitment{
                                         TransactionsMerkleRoot: TxMkRt,
                                         TransactionStatusHash:  TxSt,
@@ -182,7 +182,7 @@ func mine(job t_job, conn net.Conn) bool {
     newDiff = new(big.Int).Mul(difficulty.CompactToBig(bh.Bits), newDiff)
     log.Printf("Job %s: New target: %v\n", job.JobId, newDiff)
 
-    nonce := str2ui64Bg(job.Nonce)
+    nonce := strLi2ui64(job.Nonce)
     log.Printf("Job %s: Start from nonce:\t0x%016x = %d\n", job.JobId, nonce, nonce)
     // for i := nonce; i <= nonce+consensus.TargetSecondsPerBlock*esHR && i <= maxNonce; i++ {
     for i := nonce; i <= maxNonce; i++ {
@@ -266,15 +266,15 @@ func view_parsing(bh *types.BlockHeader, job t_job) {
     fmt.Println("\tTransactionsMerkleRoot:", bh.BlockCommitment.TransactionsMerkleRoot.String())
     fmt.Println("\tTransactionStatusHash:", bh.BlockCommitment.TransactionStatusHash.String())
     fmt.Println("\ttarget_str:", job.Target)
-    fmt.Println("\ttarget_ui64Bg:", str2ui64Bg(job.Target))
+    fmt.Println("\ttarget_ui64Bg:", strLi2ui64(job.Target))
 }
 
-func str2ui64Bg(str string) uint64 {
+func strLi2ui64(str string) uint64 {
     ui64, _ := strconv.ParseUint(strSwitchEndian(str), 16, 64)
     return ui64
 }
 
-func str2ui64Li(str string) uint64 {
+func strBg2ui64(str string) uint64 {
     ui64, _ := strconv.ParseUint(str, 16, 64)
     return ui64
 }
