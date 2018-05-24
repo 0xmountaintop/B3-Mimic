@@ -17,60 +17,73 @@ func StringToBig(h string) *big.Int {
     return n
 }
 
-func main() {
-    // fmt.Println("Diff1:", Diff1)
-    padded := make([]byte, 32)
-    // padded := make([]byte, 32)
+// func main() {
+//     // fmt.Println("Diff1:", Diff1)
+//     padded := make([]byte, 32)
+//     // padded := make([]byte, 32)
 
-    // bitsStr := "540b02000000001d"
+//     // bitsStr := "540b02000000001d"
 
-    // bitsStr = strSwitchEndian(bitsStr)
-    // bitsUint := str2ui64(bitsStr)
-    // diff := difficulty.CompactToBig(bitsUint)
-    // fmt.Println("Diff:", diff)
+//     // bitsStr = strSwitchEndian(bitsStr)
+//     // bitsUint := str2ui64(bitsStr)
+//     // diff := difficulty.CompactToBig(bitsUint)
+//     // fmt.Println("Diff:", diff)
 
 
 
-    // // diff,_ := new(big.Int).SetString("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",16)
-    // // diff.Rsh(diff, uint(1))
-    // // diffBuff := new(big.Int).Div(Diff1, diff).Bytes()
-    // // fmt.Println(diffBuff)
-    // // copy(padded[32-len(diffBuff):], diffBuff)
-    // copy(padded[:], diff.Bytes())
-    // fmt.Println(padded)
-    // // buff := padded[0:4]
-    // buff := padded[:]
-    // fmt.Println(buff)
-    // // targetHex := hex.EncodeToString(reverse(buff))
-    // targetHex := hex.EncodeToString(buff)
-    // fmt.Println(targetHex)
+//     // // diff,_ := new(big.Int).SetString("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",16)
+//     // // diff.Rsh(diff, uint(1))
+//     // // diffBuff := new(big.Int).Div(Diff1, diff).Bytes()
+//     // // fmt.Println(diffBuff)
+//     // // copy(padded[32-len(diffBuff):], diffBuff)
+//     // copy(padded[:], diff.Bytes())
+//     // fmt.Println(padded)
+//     // // buff := padded[0:4]
+//     // buff := padded[:]
+//     // fmt.Println(buff)
+//     // // targetHex := hex.EncodeToString(reverse(buff))
+//     // targetHex := hex.EncodeToString(buff)
+//     // fmt.Println(targetHex)
 
-    // i := big.NewInt(32000)
-    // fmt.Println(i)
-    // diffBuff := i.Bytes()
-    // fmt.Println(diffBuff)
-    // copy(padded[32-len(diffBuff):], diffBuff)
-    // fmt.Println(padded)
-    // buff := padded[0:4]
-    // fmt.Println(buff)
-    // targetHex := hex.EncodeToString(reverse(buff))
-    // fmt.Println(targetHex)
+//     // i := big.NewInt(32000)
+//     // fmt.Println(i)
+//     // diffBuff := i.Bytes()
+//     // fmt.Println(diffBuff)
+//     // copy(padded[32-len(diffBuff):], diffBuff)
+//     // fmt.Println(padded)
+//     // buff := padded[0:4]
+//     // fmt.Println(buff)
+//     // targetHex := hex.EncodeToString(reverse(buff))
+//     // fmt.Println(targetHex)
     
-    // targetHex := "ffff0300"
-    // targetHex := "ffff3f00"
-    targetHex := "c5a70000"
-    // targetHex := "ffffffff"
-    fmt.Println(targetHex)
-    decoded, _ := hex.DecodeString(targetHex)
-    fmt.Println(decoded)
-    decoded = reverse(decoded)
-    fmt.Println(decoded)
-    copy(padded[:len(decoded)], decoded)
+//     // targetHex := "ffff0300"
+//     // targetHex := "ffff3f00"
+//     targetHex := "c5a70000"
+//     // targetHex := "ffffffff"
+//     fmt.Println(targetHex)
+//     decoded, _ := hex.DecodeString(targetHex)
+//     fmt.Println(decoded)
+//     decoded = reverse(decoded)
+//     fmt.Println(decoded)
+//     copy(padded[:len(decoded)], decoded)
+//     fmt.Println(padded)
+//     newDiff := new(big.Int).SetBytes(padded)
+//     fmt.Println(newDiff)
+//     newDiff = new(big.Int).Div(Diff1, newDiff)
+//     fmt.Println(newDiff)
+// }
+
+func main() {
+    padded := make([]byte, 32)
+    diff,_ := new(big.Int).SetString("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",16)
+    diff.Rsh(diff, uint(1))
+    diffBuff := new(big.Int).Div(Diff1, diff).Bytes()
+    copy(padded[32-len(diffBuff):], diffBuff)
     fmt.Println(padded)
-    newDiff := new(big.Int).SetBytes(padded)
-    fmt.Println(newDiff)
-    newDiff = new(big.Int).Div(Diff1, newDiff)
-    fmt.Println(newDiff)
+    buff := padded[0:4]
+    fmt.Println(buff)
+    targetHex := hex.EncodeToString(reverse(buff))
+    fmt.Println(targetHex)
 }
 
 func reverse(src []byte) []byte {

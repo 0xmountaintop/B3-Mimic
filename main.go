@@ -59,7 +59,8 @@ const (
     poolAddr = "stratum-btm.antpool.com:6666" //39.107.125.245
     login = `poisoned.1`
 
-    flush = "\r\n\r\n"
+    // flush = "\r\n\r\n"
+    flush = "\n"
     MOCK = false
     DEBUG = false
     esHR  = uint64(166) //estimated Hashrate. 1 for Go, 10 for simd, 166 for gpu, 900 for B3
@@ -176,11 +177,12 @@ func mine(job t_job, conn net.Conn) bool {
     decoded, _ := hex.DecodeString(targetHex)
     decoded = reverse(decoded)
     copy(padded[:len(decoded)], decoded)
-    newDiff := new(big.Int).SetBytes(padded)
-    newDiff = new(big.Int).Div(Diff1, newDiff)
-    log.Printf("Job %s: Old target: %v\n", job.JobId, difficulty.CompactToBig(bh.Bits))
-    newDiff = new(big.Int).Mul(difficulty.CompactToBig(bh.Bits), newDiff)
-    log.Printf("Job %s: New target: %v\n", job.JobId, newDiff)
+    target := new(big.Int).SetBytes(padded)
+    // newDiff = new(big.Int).Div(Diff1, newDiff)
+    // log.Printf("Job %s: Old target: %v\n", job.JobId, difficulty.CompactToBig(bh.Bits))
+    // newDiff = new(big.Int).Mul(difficulty.CompactToBig(bh.Bits), newDiff)
+    // log.Printf("Job %s: New target: %v\n", job.JobId, newDiff)
+    log.Printf("Job %s: Target: %v\n", job.JobId, target)
 
     nonce := strLi2ui64(job.Nonce)
     log.Printf("Job %s: Start from nonce:\t0x%016x = %d\n", job.JobId, nonce, nonce)
@@ -198,7 +200,7 @@ func mine(job t_job, conn net.Conn) bool {
             }
 
             // if difficulty.CheckProofOfWork(&headerHash, &seedHash, bh.Bits) {
-            if difficulty.CheckProofOfWork(&headerHash, &seedHash, difficulty.BigToCompact(newDiff)) {
+            if difficulty.CheckProofOfWork(&headerHash, &seedHash, difficulty.BigToCompact(target)) {
                 log.Printf("Job %s: Target found! Proof hash: 0x%v\n", job.JobId, headerHash.String())
 
                 nonceStr := strconv.FormatUint(i, 16)
