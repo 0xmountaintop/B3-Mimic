@@ -178,10 +178,6 @@ func mine(job t_job, conn net.Conn) bool {
     decoded = reverse(decoded)
     copy(padded[:len(decoded)], decoded)
     target := new(big.Int).SetBytes(padded)
-    // newDiff = new(big.Int).Div(Diff1, newDiff)
-    // log.Printf("Job %s: Old target: %v\n", job.JobId, difficulty.CompactToBig(bh.Bits))
-    // newDiff = new(big.Int).Mul(difficulty.CompactToBig(bh.Bits), newDiff)
-    // log.Printf("Job %s: New target: %v\n", job.JobId, newDiff)
     log.Printf("Job %s: Target: %v\n", job.JobId, target)
 
     nonce := strLi2ui64(job.Nonce)
